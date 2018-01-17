@@ -3,7 +3,7 @@ package main_test
 import (
 	"testing"
 
-	main "github.com/aws-samples/lambda-go-samples"
+	main "github.com/lalyos/lambdatest"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/stretchr/testify/assert"
