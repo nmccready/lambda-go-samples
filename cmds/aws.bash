@@ -2,6 +2,7 @@ init() {
     cmd-export-ns aws "aws namespace"
     cmd-export aws-logstreams
     cmd-export aws-logs
+    cmd-export aws-listStacks
     
     #AWS=$(which aws)
     deps-require aws
@@ -39,4 +40,11 @@ aws-logs() {
     --log-stream-names $streamName \
     --query 'events[?contains(message,`'$messagePattern'`)].message' \
     --out text
+}
+
+aws-listStacks() {
+  declare desc="List cloudformation stacks with CREATE_XXX state"
+
+  $AWS cloudformation list-stacks \
+    --query 'StackSummaries[?contains(StackStatus,`CREATE`)].StackName'
 }
