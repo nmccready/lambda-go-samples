@@ -72,11 +72,37 @@ const asciiTemplate = `{ "text": " instances: ` + "```" + `
       {{- end}}
     {{- end}} |
    {{- .PublicIpAddress | Deref | printf " %-16s" }} |
-   {{- .Placement.AvailabilityZone | Deref | printf " %-12s" }} |
-   {{- .LaunchTime | Hours }} | 
-   {{- .InstanceType}}/{{- .InstanceLifecycle }}
+   {{- .Placement.AvailabilityZone | Deref | printf " %-12s" }} | 
+   {{- .LaunchTime | Hours  | printf "%-16s"}} | 
 {{ end}}
 {{- end}}-------------------------------------------------------------------------------------------------------------+` +
+	"```" + `"}`
+
+const asciiTemplateHours = `{ "text": " instances: ` + "```" + `
+----------------------------------------------------------------------------------------------------------------+
+{{ printf "%-20s" "instanceId" }} | 
+{{- printf " %-30s" "name" }} | 
+{{- printf " %-14s" "publicIp" }} | 
+{{- printf " %-12s" "region" }} | 
+{{- printf " %-5s" "hours" }} | 
+{{- printf " %-9s" "insType" }} | 
+{{- printf " %-3s" "spt" }} | 
+----------------------------------------------------------------------------------------------------------------+
+{{ range . }}
+  {{- range .Instances }}
+    {{- .InstanceId | Deref | printf "%-20s" }} |
+    {{- range .Tags }}
+      {{- if eq ( Deref .Key ) "Name" }}
+        {{- .Value | Deref | printf " %-30s"}}
+      {{- end}}
+    {{- end}} |
+   {{- .PublicIpAddress | Deref | printf " %-14s" }} |
+   {{- .Placement.AvailabilityZone | Deref | printf " %-12s" }} |
+   {{- .LaunchTime | Hours | printf "%5sh" }} | 
+   {{- .InstanceType | Deref| printf " %-9s"}} |
+   {{- if .InstanceLifecycle }}  X {{else}}    {{end}} |
+{{ end}}
+{{- end}}----------------------------------------------------------------------------------------------------------------+` +
 	"```" + `"}`
 
 /*
@@ -85,12 +111,13 @@ const asciiTemplate = `{ "text": " instances: ` + "```" + `
 func formatInstances(reservations []*ec2.Reservation, toAscii bool) string {
 	actualTempl := msgTemplate
 	if toAscii {
-		actualTempl = asciiTemplate
+		actualTempl = asciiTemplateHours
 	}
 	tmpl, err := template.New("test").Funcs(template.FuncMap{
 		"Deref": func(i *string) string { return *i },
 		"Hours": func(t *time.Time) string {
-			return fmt.Sprintln(time.Since(*t).Truncate(time.Minute))
+			hour := strings.Split(fmt.Sprint(time.Since(*t).Truncate(time.Hour)), "h")[0]
+			return hour
 		},
 	}).Parse(actualTempl)
 
@@ -152,6 +179,8 @@ func awsInsatncesMsg(respUrl string, toAscii bool) {
 	fmt.Println("response:", resp.Status)
 }
 
+/*
 func main() {
 	awsInsatncesMsg(os.Getenv("respUrl"), true)
 }
+*/
