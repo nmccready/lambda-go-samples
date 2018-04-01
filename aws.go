@@ -91,11 +91,11 @@ const asciiTemplateHours = `{ "text": " instances: ` + "```" + `
 {{ range . }}
   {{- range .Instances }}
     {{- .InstanceId | Deref | printf "%-20s" }} |
-    {{- range .Tags }}
+    {{- if .Tags}}{{- range .Tags }}
       {{- if eq ( Deref .Key ) "Name" }}
         {{- .Value | Deref | printf " %-30s"}}
       {{- end}}
-    {{- end}} |
+    {{- end}}{{- else}}{{"NONAME"| printf " %-30s"}}{{end}} |
    {{- .PublicIpAddress | Deref | printf " %-14s" }} |
    {{- .Placement.AvailabilityZone | Deref | printf " %-12s" }} |
    {{- .LaunchTime | Hours | printf "%5sh" }} | 
