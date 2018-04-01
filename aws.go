@@ -114,7 +114,13 @@ func formatInstances(reservations []*ec2.Reservation, toAscii bool) string {
 		actualTempl = asciiTemplateHours
 	}
 	tmpl, err := template.New("test").Funcs(template.FuncMap{
-		"Deref": func(i *string) string { return *i },
+		"Deref": func(i *string) string {
+			if i != nil {
+				return *i
+			} else {
+				return "nil"
+			}
+		},
 		"Hours": func(t *time.Time) string {
 			hour := strings.Split(fmt.Sprint(time.Since(*t).Truncate(time.Hour)), "h")[0]
 			return hour
