@@ -7,6 +7,7 @@ Resources:
     Properties:
       Handler: main
       Runtime: go1.x
+      #Role: arn:aws:iam::161831738826:role/lambda_basic_execution
       Events:
         GetEvent:
           Type: Api
