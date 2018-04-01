@@ -145,7 +145,14 @@ func awsInstancesInRegion(reg string) []*ec2.Reservation {
 		Region: aws.String(reg),
 	}))
 	svc := ec2.New(sess)
-	din, err := svc.DescribeInstances(nil)
+	din, err := svc.DescribeInstances(&ec2.DescribeInstancesInput{
+		Filters: []*ec2.Filter{
+			&ec2.Filter{
+				Name:   aws.String("instance-state-name"),
+				Values: aws.StringSlice([]string{"running"}),
+			},
+		},
+	})
 	if err != nil {
 		panic(err)
 	}
