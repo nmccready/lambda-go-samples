@@ -2,8 +2,10 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"net/url"
+	"os"
 	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -16,6 +18,8 @@ var (
 )
 
 const DEFAULT_RESPONSE string = "done"
+
+var Version = ""
 
 // Handler is your Lambda function handler
 // It uses Amazon API Gateway request/responses provided by the aws-lambda-go/events package,
@@ -50,6 +54,11 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 }
 
 func main() {
-	lambda.Start(Handler)
-
+	if os.Getenv("LAMBDA_RUNTIME_DIR") != "" {
+		lambda.Start(Handler)
+	} else {
+		if len(os.Args) > 1 && strings.Contains(os.Args[1], "version") {
+			fmt.Println("version:", Version)
+		}
+	}
 }
