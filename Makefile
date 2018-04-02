@@ -8,6 +8,9 @@ zip: build
 build:
 	GOOS=linux go build -o main  -ldflags '-X main.Version="$(VERSION)"' main.go aws.go
 
+build-osx:
+	go build -o main  -ldflags '-X main.Version="$(VERSION)"' main.go aws.go
+
 update: zip
 	aws lambda update-function-code --function-name $(shell aws cloudformation list-stack-resources --stack-name $(AWS_STACK_NAME) --query 'StackResourceSummaries[?ResourceType == `AWS::Lambda::Function`].PhysicalResourceId' --out text) \
 	  --s3-bucket lp-lambda-go \
