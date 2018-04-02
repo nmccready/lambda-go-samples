@@ -13,5 +13,5 @@ build-osx:
 
 update: zip
 	aws lambda update-function-code --function-name $(shell aws cloudformation list-stack-resources --stack-name $(AWS_STACK_NAME) --query 'StackResourceSummaries[?ResourceType == `AWS::Lambda::Function`].PhysicalResourceId' --out text) \
-	  --s3-bucket lp-lambda-go \
+	  --s3-bucket $(AWS_S3_BUCKET) \
 	  --s3-key $(shell sed -n '/CodeUri/ s:.*/::p'  packaged.yml)
