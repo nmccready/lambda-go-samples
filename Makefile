@@ -24,3 +24,9 @@ deploy-stack: zip ## Deploys/Updates the cloudformation stack
 	    --template-file ./packaged.yml  \
 	    --capabilities CAPABILITY_IAM
 
+print-api-url: ## Prints ApiGateway url base
+	@aws cloudformation describe-stacks \
+	    --stack-name $(AWS_STACK_NAME) \
+	    --query 'Stacks[0].Outputs[0].OutputValue' \
+	    --out text
+
