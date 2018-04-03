@@ -10,7 +10,7 @@ Resources:
       Environment:
         Variables:
             REGIONS: eu-west-1,eu-west-2,eu-west-3,eu-central-1,us-east-1,us-east-2,us-west-1,us-west-2
-      #Role: arn:aws:iam::161831738826:role/lambda_basic_execution
+      Policies: AmazonEC2ReadOnlyAccess 
       Events:
         SlackPost:
           Type: Api
