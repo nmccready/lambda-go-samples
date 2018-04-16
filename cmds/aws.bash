@@ -46,5 +46,7 @@ aws-listStacks() {
   declare desc="List cloudformation stacks with CREATE_XXX state"
 
   $AWS cloudformation list-stacks \
-    --query 'StackSummaries[?contains(StackStatus,`CREATE`)].StackName'
+      --query 'StackSummaries[?contains([`CREATE_COMPLETE`,`CREATE_IN_PROGRESS`,`UPDATE_COMPLETE`,`UPDATE_IN_PROGRESS`],
+  StackStatus)].StackName' \
+      --out table
 }
