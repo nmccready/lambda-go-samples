@@ -188,7 +188,7 @@ func awsInstancesInRegion(reg string) []*ec2.Reservation {
 	return din.Reservations
 }
 
-func awsInsatncesMsg(respUrl string, toAscii bool) {
+func awsInsatncesMsg(respUrl string, toAscii bool) string {
 
 	_, err := external.LoadDefaultAWSConfig()
 	if err != nil {
@@ -214,15 +214,16 @@ func awsInsatncesMsg(respUrl string, toAscii bool) {
 
 	msg := formatInstances(allInstances, toAscii)
 
-	resp, err := http.Post(respUrl, "application/json", bytes.NewBufferString(msg))
+	//saveAwsResponse(allInstances)
+
+	/* simple plain text respnse, insread of delayed answer on response_url
+	slackMsg := `{ "text": " instances: ` + "```" + msg + "```" + `"}`
+	resp, err := http.Post(respUrl, "application/json", bytes.NewBufferString(slackMsg))
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("response:", resp.Status)
-}
+	log.Println("slack resp:", resp.Status)
+	*/
+	return "```" + msg + "```"
 
-/*
-func main() {
-	awsInsatncesMsg(os.Getenv("respUrl"), true)
 }
-*/

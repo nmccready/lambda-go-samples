@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"net/url"
 	"os"
 	"strings"
 
@@ -25,6 +24,7 @@ var Version = ""
 // It uses Amazon API Gateway request/responses provided by the aws-lambda-go/events package,
 // However you could use other event sources (S3, Kinesis etc), or JSON-decoded primitive types such as 'string'.
 func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	log.Println("ENV", os.Environ())
 
 	// stdout and stderr are sent to AWS CloudWatch Logs
 	log.Printf("[v0.4] Processing Lambda request %s\n", request.RequestContext.RequestID)
@@ -45,18 +45,20 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 	log.Printf("[v0.4] BODY: %s\n", request.Body)
 
-	m, err := url.ParseQuery(request.Body)
-	if err != nil {
-		panic(err)
-	}
-	resp := m["response_url"][0]
-	command := m["command"][0]
-	text := m["text"][0]
-	log.Println("response_url", resp, "command:", command, "text:", text)
+	/*
+		m, err := url.ParseQuery(request.Body)
+		if err != nil {
+			panic(err)
+		}
+		resp := m["response_url"][0]
+		command := m["command"][0]
+		text := m["text"][0]
+		log.Println("response_url", resp, "command:", command, "text:", text)
+	*/
 
-	awsInsatncesMsg(resp, strings.Contains(text, "ascii"))
+	msg := awsInsatncesMsg("", true)
 	return events.APIGatewayProxyResponse{
-		Body:       DEFAULT_RESPONSE,
+		Body:       msg,
 		StatusCode: 200,
 	}, nil
 
@@ -68,6 +70,8 @@ func main() {
 	} else {
 		if len(os.Args) > 1 && strings.Contains(os.Args[1], "version") {
 			fmt.Println("version:", Version)
+		} else {
+			fmt.Println(awsInsatncesMsg("", true))
 		}
 	}
 }
