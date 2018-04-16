@@ -11,11 +11,11 @@ GOOS=linux go build -o main
 ## Deployment
 
 ```
-AWS_STACK_NAME=lalyos-lambda-go
-AWS_S3_BUCKET=lp-lambda-go
+export AWS_STACK_NAME=lalyos-lambda-go
+export AWS_S3_BUCKET=lp-lambda-go
 
 aws cloudformation package --template-file template.yml --s3-bucket $AWS_S3_BUCKET --output-template-file packaged.yml
-aws cloudformation deploy --template-file /Users/lalyos/go/src/github.com/lalyos/lambdatest/packaged.yml --stack-name $AWS_STACK_NAME```
+aws cloudformation deploy --template-file ./packaged.yml --stack-name $AWS_STACK_NAME --capabilities CAPABILITY_IAM
 ```
 
 ## Invoke API
