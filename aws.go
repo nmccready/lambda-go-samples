@@ -1,12 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
 	"html/template"
-	"net/http"
 	"os"
 	"strings"
+	"text/tabwriter"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws/external"
@@ -105,37 +106,65 @@ const asciiTemplateHours = `{ "text": " instances: ` + "```" + `
 {{- end}}----------------------------------------------------------------------------------------------------------------+` +
 	"```" + `"}`
 
-/*
- */
+const tabwriterTemplate = `
+{{- printf "%s\t%s\t%s\t%s\t%s\t%s\t" "instanceId" "name" "publicIpAddress" "zone" "type" "started"}}
+{{ range . }}
+  {{- range .Instances }}
+    {{- .InstanceId | Deref }}{{"\t"}}
+    {{- . | Tag "Name" }}{{"\t"}}
+    {{- .PublicIpAddress | Deref }}{{"\t"}}
+    {{- .Placement.AvailabilityZone |  Deref }}{{"\t"}}
+    {{- .InstanceType | Deref }}{{"\t"}}
+    {{- .LaunchTime | Hours }}h{{"\t"}}
+  {{- end}}
+{{ end}}
+`
 
 func formatInstances(reservations []*ec2.Reservation, toAscii bool) string {
 	actualTempl := msgTemplate
 	if toAscii {
-		actualTempl = asciiTemplateHours
+		//actualTempl = asciiTemplateHours
+		actualTempl = tabwriterTemplate
 	}
 	tmpl, err := template.New("test").Funcs(template.FuncMap{
-		"Deref": func(i *string) string {
-			if i != nil {
-				return *i
-			} else {
-				return "nil"
+		"Deref": aws.StringValue,
+		"Tag": func(keyname string, ins *ec2.Instance) string {
+			for _, t := range ins.Tags {
+				if aws.StringValue(t.Key) == keyname {
+					return aws.StringValue(t.Value)
+				}
 			}
+			return "n/a"
 		},
 		"Hours": func(t *time.Time) string {
-			hour := strings.Split(fmt.Sprint(time.Since(*t).Truncate(time.Hour)), "h")[0]
-			return hour
+			return strings.Split(fmt.Sprint(time.Since(*t).Truncate(time.Hour)), "h")[0]
 		},
 	}).Parse(actualTempl)
 
 	if err != nil {
 		panic(err)
 	}
+
 	var b bytes.Buffer
-	err = tmpl.Execute(&b, reservations)
+	var output bytes.Buffer
+	w := tabwriter.NewWriter(&b, 0, 0, 1, ' ', tabwriter.Debug)
+	err = tmpl.Execute(w, reservations)
 	if err != nil {
 		panic(err)
 	}
-	return b.String()
+	w.Flush()
+
+	scan := bufio.NewScanner(&b)
+	scan.Scan()
+	firstLine := scan.Text()
+	fmt.Fprintln(&output, firstLine)
+	fmt.Fprintln(&output, strings.Repeat("-", len(firstLine)))
+	for scan.Scan() {
+		fmt.Fprintln(&output, scan.Text())
+	}
+
+	return output.String()
+
 }
 
 func awsInstancesInRegion(reg string) []*ec2.Reservation {
