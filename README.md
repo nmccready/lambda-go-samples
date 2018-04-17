@@ -51,3 +51,17 @@ aws cloudformation list-stack-resources \
   --query 'StackResourceSummaries[].[ResourceType,PhysicalResourceId,LogicalResourceId]' \
   --out table
 ```
+
+list regions:
+```
+aws ec2 describe-regions \
+  --query 'join(`,`, Regions[].RegionName | sort(@))' \
+  --out text
+```
+
+exclude one:
+```
+aws ec2 describe-regions \
+  --query 'join(`,`, Regions[? RegionName != `ap-northeast-2`].RegionName | sort(@))' \
+  --out text
+```
