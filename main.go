@@ -11,7 +11,8 @@ import (
 
 var (
 	// ErrNameNotProvided is thrown when a name is not provided
-	ErrNameNotProvided = errors.New("no name was provided in the HTTP body")
+	ErrNameNotProvided   = errors.New("no name was provided in the HTTP body")
+	ErrInvalidGetRequest = errors.New("invali GET request")
 )
 
 const version = "0.0.1"
@@ -32,12 +33,15 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 	log.Println("method:", request.HTTPMethod, "path:", request.Path, "res:", request.Resource)
 
-	if request.HTTPMethod == "GET" && request.Path == "version" {
+	if request.HTTPMethod == "GET" {
+		if request.Path == "version" {
 
-		return events.APIGatewayProxyResponse{
-			Body:       getVersionJson(),
-			StatusCode: 200,
-		}, nil
+			return events.APIGatewayProxyResponse{
+				Body:       getVersionJson(),
+				StatusCode: 200,
+			}, nil
+		}
+		return events.APIGatewayProxyResponse{}, ErrInvalidGetRequest
 	}
 
 	// If no name is provided in the HTTP request body, throw an error

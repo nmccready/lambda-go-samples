@@ -21,7 +21,7 @@ Resources:
           Type: Api
           Properties:
             Path: /
-            Method: get
+            Method: post
         Version:
           Type: Api
           Properties:

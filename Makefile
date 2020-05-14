@@ -10,13 +10,15 @@ version: ## Echo the current version
 	@echo $(VERSION)
 
 zip: ## builds the linux binary, and creates the zip for lambda upload
-	GOOS=linux go build -o main  -ldflags '-X main.Version="$(VERSION)"' main.go aws.go
+	GOOS=linux go build -o main  -ldflags '-X main.Version="$(VERSION)"' main.go
+	# GOOS=linux go build -o main  -ldflags '-X main.Version="$(VERSION)"' main.go aws.go
 	aws cloudformation package --template-file template.yml --s3-bucket $(AWS_S3_BUCKET) --output-template-file packaged.yml
 
 build: ## Build binary osx
-	go build -o main  -ldflags '-X main.Version="$(VERSION)"' main.go aws.go
+	go build -o main  -ldflags '-X main.Version="$(VERSION)"' main.go
+	# go build -o main  -ldflags '-X main.Version="$(VERSION)"' main.go aws.go
 
-update-lambda: zip ## Updates the lambda code in the existing CF stack
+update: zip ## Updates the lambda code in the existing CF stack
 	aws lambda update-function-code --function-name $(shell aws cloudformation list-stack-resources --stack-name $(AWS_STACK_NAME) --query 'StackResourceSummaries[?ResourceType == `AWS::Lambda::Function`].PhysicalResourceId' --out text) \
 	  --s3-bucket $(AWS_S3_BUCKET) \
 	  --s3-key $(shell sed -n '/CodeUri/ s:.*/::p'  packaged.yml)
@@ -27,7 +29,13 @@ deploy: zip ## Deploys/Updates the cloudformation stack
 	    --template-file ./packaged.yml  \
 	    --capabilities CAPABILITY_IAM
 
-print-api-url: ## Prints ApiGateway url base
+undeploy: zip
+	aws cloudformation delete-stack \
+			--stack-name $(AWS_STACK_NAME) \
+	    --template-file ./packaged.yml  \
+	    --capabilities CAPABILITY_IAM
+
+get-api: ## Prints ApiGateway url base
 	@aws cloudformation describe-stacks \
 	    --stack-name $(AWS_STACK_NAME) \
 	    --query 'Stacks[0].Outputs[0].OutputValue' \
