@@ -1,9 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"os"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -15,10 +18,33 @@ var (
 	ErrInvalidGetRequest = errors.New("invalid GET request")
 )
 
-const version = "0.0.1"
+type PackageJson struct {
+	Name    string `json:"name"`
+	Version string `json:"version"`
+}
+
+func getFileBytes(filename string) []byte {
+	jsonFile, err := os.Open(filename)
+	// if we os.Open returns an error then handle it
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("Successfully Opened users.json")
+	// defer the closing of our jsonFile so that we can parse it later on
+	defer jsonFile.Close()
+
+	bytes, _ := ioutil.ReadAll(jsonFile)
+
+	return bytes
+}
 
 func getVersionJson() string {
-	return fmt.Sprintf("{ \"version\": \"%v\" }", version)
+	var pkg PackageJson
+	err := json.Unmarshal(getFileBytes("package.json"), &pkg)
+	if err != nil {
+		panic(err)
+	}
+	return fmt.Sprintf("{ \"version\": \"%v\" }", pkg.Version)
 }
 
 // Handler is your Lambda function handler
