@@ -1,0 +1,24 @@
+{
+  "name": "@znemz/lambda-go-samples",
+  "version": "0.0.1",
+  "description": "lammbda go sample, package.json is for versioning only",
+  "main": "index.js",
+  "scripts": {
+    "test": "go test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nmccready/lambda-go-samples.git"
+  },
+  "keywords": [
+    "go",
+    "lambda",
+    "aws"
+  ],
+  "author": "Nicholas McCready",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nmccready/lambda-go-samples/issues"
+  },
+  "homepage": "https://github.com/nmccready/lambda-go-samples#readme"
+}
