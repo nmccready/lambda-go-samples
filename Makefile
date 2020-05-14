@@ -29,11 +29,8 @@ deploy: zip ## Deploys/Updates the cloudformation stack
 	    --template-file ./packaged.yml  \
 	    --capabilities CAPABILITY_IAM
 
-undeploy: zip
-	aws cloudformation delete-stack \
-			--stack-name $(AWS_STACK_NAME) \
-	    --template-file ./packaged.yml  \
-	    --capabilities CAPABILITY_IAM
+undeploy:
+	aws cloudformation delete-stack --stack-name $(AWS_STACK_NAME)
 
 get-api: ## Prints ApiGateway url base
 	@aws cloudformation describe-stacks \
