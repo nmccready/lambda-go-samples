@@ -2,10 +2,10 @@
   "name": "@znemz/lambda-go-samples",
   "private": true,
   "version": "0.0.1",
-  "description": "lammbda go sample, package.json is for versioning only",
+  "description": "lambda go sample, package.json is for versioning only",
   "main": "index.js",
   "scripts": {
-    "test": "go test"
+    "test": "make test"
   },
   "repository": {
     "type": "git",
