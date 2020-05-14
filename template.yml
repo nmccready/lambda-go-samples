@@ -9,7 +9,7 @@ Resources:
       Runtime: go1.x
       Environment:
         Variables:
-          REGIONS: eu-west-1,eu-west-2,eu-west-3,eu-central-1,us-east-1,us-east-2,us-west-1,us-west-2
+          REGIONS: us-east-1,us-east-2,us-west-1,us-west-2
       Policies: AmazonEC2ReadOnlyAccess
       Events:
         # SlackPost:
