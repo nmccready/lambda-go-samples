@@ -5,7 +5,7 @@
   "description": "lambda go sample, package.json is for versioning only",
   "main": "index.js",
   "scripts": {
-    "test": "go test $(go list ./...)"
+    "test": "go test $(go list ./... | egrep -v scripts)"
   },
   "repository": {
     "type": "git",

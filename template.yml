@@ -22,6 +22,11 @@ Resources:
           Properties:
             Path: /version
             Method: get
+        Version:
+          Type: Api
+          Properties:
+            Path: /tmp
+            Method: get
 Outputs:
   RestUrl:
     Description: External Rest Api url

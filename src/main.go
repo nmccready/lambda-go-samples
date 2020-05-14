@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"log"
+	"os/exec"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -32,7 +33,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 			version, err := utils.GetVersionJson()
 
 			if err != nil {
-				return events.APIGatewayProxyResponse{}, err
+				return events.APIGatewayProxyResponse{StatusCode: 500}, err
 			}
 
 			return events.APIGatewayProxyResponse{
@@ -40,12 +41,30 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 				StatusCode: 200,
 			}, nil
 		}
-		return events.APIGatewayProxyResponse{}, ErrInvalidGetRequest
+
+		if request.Path == "/tmp" {
+			cmd := exec.Command("ls", "-la", "/tmp")
+			outBytes, err := cmd.Output()
+
+			if err != nil {
+				return events.APIGatewayProxyResponse{StatusCode: 500}, err
+			}
+
+			out := string(outBytes)
+			log.Println(out)
+
+			return events.APIGatewayProxyResponse{
+				Body:       out,
+				StatusCode: 200,
+			}, nil
+
+		}
+		return events.APIGatewayProxyResponse{StatusCode: 404}, ErrInvalidGetRequest
 	}
 
 	// If no name is provided in the HTTP request body, throw an error
 	if len(request.Body) < 1 {
-		return events.APIGatewayProxyResponse{}, ErrNameNotProvided
+		return events.APIGatewayProxyResponse{StatusCode: 500}, ErrNameNotProvided
 	}
 
 	return events.APIGatewayProxyResponse{
