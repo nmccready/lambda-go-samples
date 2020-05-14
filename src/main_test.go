@@ -10,6 +10,8 @@ import (
 
 func TestHandler(t *testing.T) {
 
+	version, _ := utils.GetVersionJson()
+
 	tests := []struct {
 		request events.APIGatewayProxyRequest
 		expect  string
@@ -26,7 +28,7 @@ func TestHandler(t *testing.T) {
 			// Test that the handler responds with the correct response
 			// when a valid name is provided in the HTTP body
 			request: events.APIGatewayProxyRequest{HTTPMethod: "GET", Path: "/version"},
-			expect:  utils.GetVersionJson(),
+			expect:  version,
 			err:     nil,
 		},
 		{

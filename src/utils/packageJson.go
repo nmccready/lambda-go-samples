@@ -10,11 +10,11 @@ type PackageJson struct {
 	Version string `json:"version"`
 }
 
-func GetVersionJson() string {
+func GetVersionJson() (string, error) {
 	var pkg PackageJson
 	err := json.Unmarshal(GetFileBytes("../../package.json"), &pkg)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
-	return fmt.Sprintf("{ \"version\": \"%v\" }", pkg.Version)
+	return fmt.Sprintf("{ \"version\": \"%v\" }", pkg.Version), nil
 }

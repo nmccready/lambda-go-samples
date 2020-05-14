@@ -29,8 +29,14 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	if request.HTTPMethod == "GET" {
 		if request.Path == "/version" {
 
+			version, err := utils.GetVersionJson()
+
+			if err != nil {
+				return events.APIGatewayProxyResponse{}, err
+			}
+
 			return events.APIGatewayProxyResponse{
-				Body:       utils.GetVersionJson(),
+				Body:       version,
 				StatusCode: 200,
 			}, nil
 		}

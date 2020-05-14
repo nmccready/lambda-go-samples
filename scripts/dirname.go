@@ -7,5 +7,6 @@ import (
 )
 
 func main() {
-	fmt.Println(utils.GetVersionJson())
+	version, _ := utils.GetVersionJson()
+	fmt.Println(version)
 }
