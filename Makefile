@@ -1,6 +1,6 @@
 .PHONY: help
-#AWS_STACK_NAME=lalyos-lambda-go
-#AWS_S3_BUCKET=lp-lambda-go
+# SEE .env FOR $AWS_STACK_NAME, $AWS_S3_BUCKET
+
 VERSION = 0.0.7
 
 help: ## Generates this help message

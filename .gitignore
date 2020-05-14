@@ -5,3 +5,5 @@ main
 main.zip
 insatnces.gob
 Gunfile.*
+.env
+vendor

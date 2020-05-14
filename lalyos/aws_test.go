@@ -1,4 +1,4 @@
-package main
+package lalyos
 
 import (
 	"encoding/gob"

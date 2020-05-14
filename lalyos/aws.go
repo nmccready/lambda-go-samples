@@ -1,4 +1,4 @@
-package main
+package lalyos
 
 import (
 	"bufio"
@@ -188,7 +188,7 @@ func awsInstancesInRegion(reg string) []*ec2.Reservation {
 	return din.Reservations
 }
 
-func awsInsatncesMsg(respUrl string, toAscii bool) string {
+func awsInstancesMsg(respUrl string, toAscii bool) string {
 
 	_, err := external.LoadDefaultAWSConfig()
 	if err != nil {
@@ -216,7 +216,7 @@ func awsInsatncesMsg(respUrl string, toAscii bool) string {
 
 	//saveAwsResponse(allInstances)
 
-	/* simple plain text respnse, insread of delayed answer on response_url
+	/* simple plain text response, insread of delayed answer on response_url
 	slackMsg := `{ "text": " instances: ` + "```" + msg + "```" + `"}`
 	resp, err := http.Post(respUrl, "application/json", bytes.NewBufferString(slackMsg))
 	if err != nil {
