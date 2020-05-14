@@ -5,7 +5,7 @@ Resources:
   HelloFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: dist/main
+      Handler: bin/main
       Runtime: go1.x
       Environment:
         Variables:

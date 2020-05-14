@@ -1,17 +1,12 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
-	"io/ioutil"
 	"log"
-	"os"
-	"path"
-	"runtime"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	utils "github.com/nmccready/lambda-go-samples/src/utils"
 )
 
 var (
@@ -20,47 +15,10 @@ var (
 	ErrInvalidGetRequest = errors.New("invalid GET request")
 )
 
-type PackageJson struct {
-	Name    string `json:"name"`
-	Version string `json:"version"`
-}
-
-func __Dirname() string {
-	_, thisFileName, _, _ := runtime.Caller(1)
-	return path.Dir(thisFileName)
-}
-
-func getFileBytes(filename string) []byte {
-	filepath := path.Join(path.Dir(__Dirname()), filename)
-
-	jsonFile, err := os.Open(filepath)
-	// if we os.Open returns an error then handle it
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println("Successfully Opened users.json")
-	// defer the closing of our jsonFile so that we can parse it later on
-	defer jsonFile.Close()
-
-	bytes, _ := ioutil.ReadAll(jsonFile)
-
-	return bytes
-}
-
-func getVersionJson() string {
-	var pkg PackageJson
-	err := json.Unmarshal(getFileBytes("package.json"), &pkg)
-	if err != nil {
-		panic(err)
-	}
-	return fmt.Sprintf("{ \"version\": \"%v\" }", pkg.Version)
-}
-
 // Handler is your Lambda function handler
 // It uses Amazon API Gateway request/responses provided by the aws-lambda-go/events package,
 // However you could use other event sources (S3, Kinesis etc), or JSON-decoded primitive types such as 'string'.
 func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-
 	// log.Println("ENV", os.Environ())
 
 	// stdout and stderr are sent to AWS CloudWatch Logs
@@ -72,7 +30,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		if request.Path == "/version" {
 
 			return events.APIGatewayProxyResponse{
-				Body:       getVersionJson(),
+				Body:       utils.GetVersionJson(),
 				StatusCode: 200,
 			}, nil
 		}

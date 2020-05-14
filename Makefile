@@ -10,12 +10,12 @@ version: ## Echo the current version
 	@echo $(VERSION)
 
 zip: ## builds the linux binary, and creates the zip for lambda upload
-	GOOS=linux go build -o dist/main  -ldflags '-X main.Version="$(VERSION)"' src/main.go
+	GOOS=linux go build -o bin/main  -ldflags '-X main.Version="$(VERSION)"' src/main.go
 	# GOOS=linux go build -o main  -ldflags '-X main.Version="$(VERSION)"' main.go aws.go
 	aws cloudformation package --template-file template.yml --s3-bucket $(AWS_S3_BUCKET) --output-template-file packaged.yml
 
 build: ## Build binary osx
-	go build -o dist/main  -ldflags '-X main.Version="$(VERSION)"' src/main.go
+	go build -o bin/main  -ldflags '-X main.Version="$(VERSION)"' src/main.go
 	# go build -o main  -ldflags '-X main.Version="$(VERSION)"' main.go aws.go
 
 update: zip ## Updates the lambda code in the existing CF stack

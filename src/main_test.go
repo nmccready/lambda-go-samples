@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/aws/aws-lambda-go/events"
+	utils "github.com/nmccready/lambda-go-samples/src/utils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -25,7 +26,7 @@ func TestHandler(t *testing.T) {
 			// Test that the handler responds with the correct response
 			// when a valid name is provided in the HTTP body
 			request: events.APIGatewayProxyRequest{HTTPMethod: "GET", Path: "/version"},
-			expect:  getVersionJson(),
+			expect:  utils.GetVersionJson(),
 			err:     nil,
 		},
 		{

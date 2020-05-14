@@ -6,4 +6,5 @@ Gunfile.*
 .env
 vendor
 dist
+bin
 *.zip
