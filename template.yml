@@ -5,18 +5,13 @@ Resources:
   HelloFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: main
+      Handler: dist/main
       Runtime: go1.x
       Environment:
         Variables:
           REGIONS: us-east-1,us-east-2,us-west-1,us-west-2
       Policies: AmazonEC2ReadOnlyAccess
       Events:
-        # SlackPost:
-        #   Type: Api
-        #   Properties:
-        #     Path: /
-        #     Method: post
         Root:
           Type: Api
           Properties:

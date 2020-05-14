@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path"
+	"runtime"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -23,8 +25,15 @@ type PackageJson struct {
 	Version string `json:"version"`
 }
 
+func __Dirname() string {
+	_, thisFileName, _, _ := runtime.Caller(1)
+	return path.Dir(thisFileName)
+}
+
 func getFileBytes(filename string) []byte {
-	jsonFile, err := os.Open(filename)
+	filepath := path.Join(path.Dir(__Dirname()), filename)
+
+	jsonFile, err := os.Open(filepath)
 	// if we os.Open returns an error then handle it
 	if err != nil {
 		fmt.Println(err)
