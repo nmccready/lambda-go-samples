@@ -14,7 +14,7 @@ import (
 func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	utils.LogRequest(request)
 
-	if request.Path != "/tmp" {
+	if request.Path != "/ls" {
 		return events.APIGatewayProxyResponse{StatusCode: 404}, utils.ErrInvalidGetRequest
 	}
 	out, err := utils.Ls(request.QueryStringParameters["dir"])
