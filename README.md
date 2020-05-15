@@ -4,7 +4,7 @@ see: `make help`
 
 ## dependencies
 
-- `npm install -g foreman`
+- `npm install -g foreman` to inject env variables like S3 buckets etc.
 - `brew install jq`
 
 ## deployment example
