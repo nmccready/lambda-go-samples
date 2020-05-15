@@ -1,4 +1,4 @@
-.PHONY: help, version, zip, build-osx, update-fn-code, deploy-stack, print-api-url, clean, get-build
+.PHONY: help, version, zip, build-osx, update-fn-code, deploy-stack, print-api-url, clean, get-build, get-lambdas
 # SEE .env FOR $AWS_STACK_NAME, $AWS_S3_BUCKET
 
 VERSION=$(shell jq -r ".version" package.json)
@@ -20,10 +20,12 @@ build: ## Build binary osx
 	./scripts/build.sh
 
 update: zip ## Updates the lambda code in the existing CF stack
-	aws lambda update-function-code --function-name $(shell aws cloudformation list-stack-resources --stack-name $(AWS_STACK_NAME) --query 'StackResourceSummaries[?ResourceType == `AWS::Lambda::Function`].PhysicalResourceId' --out text) \
+	@for i in `make get-lambdas`; do \
+		aws lambda update-function-code --function-name  $$i \
 	  --s3-bucket $(AWS_S3_BUCKET) \
-	  --s3-key $(shell sed -n '/CodeUri/ s:.*/::p'  packaged.yml)
-
+	  --s3-key `sed -n '/CodeUri/ s:.*/::p'  packaged.yml | head -1`; \
+	done
+	
 deploy: zip ## Deploys/Updates the cloudformation stack 
 	aws cloudformation deploy \
 	    --stack-name $(AWS_STACK_NAME) \
@@ -31,7 +33,10 @@ deploy: zip ## Deploys/Updates the cloudformation stack
 	    --capabilities CAPABILITY_IAM
 
 undeploy:
-	aws cloudformation delete-stack --stack-name $(AWS_STACK_NAME)
+	@aws cloudformation delete-stack --stack-name $(AWS_STACK_NAME)
+
+get-lambdas:
+	@aws cloudformation list-stack-resources --stack-name $(AWS_STACK_NAME) --query 'StackResourceSummaries[?ResourceType == `AWS::Lambda::Function`].PhysicalResourceId' --out text
 
 get-api: ## Prints ApiGateway url base
 	@aws cloudformation describe-stacks \
