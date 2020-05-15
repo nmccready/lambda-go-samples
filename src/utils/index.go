@@ -9,11 +9,13 @@ import (
 	"runtime"
 )
 
+const DEFAULT_VERSION = "development"
+
 var (
 	// ErrNameNotProvided is thrown when a name is not provided
-	ErrNameNotProvided   = errors.New("no name was provided in the HTTP body")
-	ErrInvalidGetRequest = errors.New("invalid GET request")
-	Version              string
+	ErrNameNotProvided          = errors.New("no name was provided in the HTTP body")
+	ErrInvalidGetRequest        = errors.New("invalid GET request")
+	Version              string = DEFAULT_VERSION
 )
 
 func Dirname__() string {

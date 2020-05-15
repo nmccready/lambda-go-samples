@@ -20,7 +20,7 @@ func GetVersionJson() string {
 }
 
 func GetVersionMut(version *string) string {
-	if *version == "" {
+	if *version == DEFAULT_VERSION {
 		*version = GetVersionJson()
 	}
 	return *version
