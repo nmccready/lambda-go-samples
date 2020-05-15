@@ -19,7 +19,7 @@ func TestHandler(t *testing.T) {
 			// Test that the handler responds with the correct response
 			// when a valid name is provided in the HTTP body
 			request: events.APIGatewayProxyRequest{HTTPMethod: "GET", Path: "/version"},
-			expect:  utils.GetVersionMut(&utils.Version),
+			expect:  utils.GetVersionJson(),
 			err:     nil,
 		},
 	}
