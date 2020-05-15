@@ -8,9 +8,7 @@ import (
 	utils "github.com/nmccready/lambda-go-samples/src/utils"
 )
 
-// Handler is your Lambda function handler
-// It uses Amazon API Gateway request/responses provided by the aws-lambda-go/events package,
-// However you could use other event sources (S3, Kinesis etc), or JSON-decoded primitive types such as 'string'.
+// Endpoints intent is to have fun and see the security limits of the filesystem of AWS lambda
 func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	utils.LogRequest(request)
 
