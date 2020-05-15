@@ -2,24 +2,23 @@ package main
 
 import (
 	"fmt"
-	"os/exec"
+	"os"
+
+	utils "github.com/nmccready/lambda-go-samples/src/utils"
 )
 
 func main() {
-	cmd := exec.Command("ls", "-la")
-	out, err := cmd.Output()
+	// fmt.Println(os.Args)
+	var path string
+	if len(os.Args) > 1 {
+		path = os.Args[1]
+	}
 
-	// cmd.Stdin = os.Stdin
-	// cmd.Stderr = os.Stderr
-
-	// if err := cmd.Run(); err != nil {
-	// 	fmt.Println("Error:", err)
-	// }
-
+	// fmt.Println("path: ", path)
+	out, err := utils.Ls(path)
 	if err != nil {
 		fmt.Printf("Error %s", err.Error())
 		return
 	}
 	fmt.Println(string(out))
-
 }

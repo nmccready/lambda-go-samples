@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"os/exec"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -18,20 +17,11 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	if request.Path != "/tmp" {
 		return events.APIGatewayProxyResponse{StatusCode: 404}, utils.ErrInvalidGetRequest
 	}
-
-	dir := "/tmp"
-	if request.QueryStringParameters["dir"] != "" {
-		dir = request.QueryStringParameters["dir"]
-	}
-
-	cmd := exec.Command("ls", "-la", dir)
-	outBytes, err := cmd.Output()
-
+	out, err := utils.Ls(request.QueryStringParameters["dir"])
 	if err != nil {
 		return events.APIGatewayProxyResponse{StatusCode: 500}, err
 	}
 
-	out := string(outBytes)
 	log.Println(out)
 
 	return events.APIGatewayProxyResponse{

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path"
 	"reflect"
 	"runtime"
@@ -51,4 +52,15 @@ func FullTernary(e bool, a, b interface{}) interface{} {
 		return b.(func() interface{})()
 	}
 	return b
+}
+
+func Ls(toLs string) (string, error) {
+	dir := "/tmp"
+	if toLs != "" {
+		dir = toLs
+	}
+
+	cmd := exec.Command("ls", "-la", dir)
+	outBytes, err := cmd.Output()
+	return string(outBytes), err
 }
