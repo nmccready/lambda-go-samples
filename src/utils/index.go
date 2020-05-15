@@ -10,15 +10,12 @@ import (
 
 func Dirname__() string {
 	_, thisFileName, _, _ := runtime.Caller(1)
-	fmt.Println(thisFileName)
-	wat := path.Dir(thisFileName)
-	fmt.Println(wat)
-	return wat
+	return path.Dir(thisFileName)
 }
 
 func GetFileBytes(filename string) []byte {
 	filepath := path.Join(Dirname__(), filename)
-	fmt.Println("filepath: " + filepath)
+	// fmt.Println("filepath: " + filepath)
 	jsonFile, err := os.Open(filepath)
 	// if we os.Open returns an error then handle it
 	if err != nil {

@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestHandler(t *testing.T) {
+var Version
 
-	version, _ := utils.GetVersionJson()
+func TestHandler(t *testing.T) {
 
 	tests := []struct {
 		request events.APIGatewayProxyRequest
@@ -28,7 +28,7 @@ func TestHandler(t *testing.T) {
 			// Test that the handler responds with the correct response
 			// when a valid name is provided in the HTTP body
 			request: events.APIGatewayProxyRequest{HTTPMethod: "GET", Path: "/version"},
-			expect:  version,
+			expect:  utils.GetVersionMut(&Version),
 			err:     nil,
 		},
 		{

@@ -14,6 +14,7 @@ var (
 	// ErrNameNotProvided is thrown when a name is not provided
 	ErrNameNotProvided   = errors.New("no name was provided in the HTTP body")
 	ErrInvalidGetRequest = errors.New("invalid GET request")
+	Version
 )
 
 // Handler is your Lambda function handler
@@ -30,7 +31,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	if request.HTTPMethod == "GET" {
 		if request.Path == "/version" {
 
-			version, err := utils.GetVersionJson()
+			utils.GetVersionMut(&Version)
 
 			if err != nil {
 				return events.APIGatewayProxyResponse{StatusCode: 500}, err

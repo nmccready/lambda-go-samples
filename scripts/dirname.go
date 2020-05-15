@@ -6,7 +6,9 @@ import (
 	utils "github.com/nmccready/lambda-go-samples/src/utils"
 )
 
+var Version string
+
 func main() {
-	version, _ := utils.GetVersionJson()
-	fmt.Println(version)
+	utils.GetVersionMut(&Version)
+	fmt.Println(Version)
 }

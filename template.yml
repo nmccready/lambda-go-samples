@@ -22,7 +22,7 @@ Resources:
           Properties:
             Path: /version
             Method: get
-        Version:
+        Tmp:
           Type: Api
           Properties:
             Path: /tmp
