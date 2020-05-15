@@ -32,10 +32,10 @@ Resources:
           Properties:
             Path: /version
             Method: get
-  Tmp:
+  Ls:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: bin/tmp
+      Handler: bin/ls
       Runtime: go1.x
       Environment:
         Variables:
@@ -45,7 +45,7 @@ Resources:
         Tmp:
           Type: Api
           Properties:
-            Path: /tmp
+            Path: /ls
             Method: get
 Outputs:
   RestUrl:

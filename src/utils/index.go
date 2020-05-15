@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"reflect"
 	"runtime"
 )
 
@@ -37,4 +38,17 @@ func GetFileBytes(filename string) []byte {
 	bytes, _ := ioutil.ReadAll(jsonFile)
 
 	return bytes
+}
+
+func FullTernary(e bool, a, b interface{}) interface{} {
+	if e {
+		if reflect.TypeOf(a).Kind() == reflect.Func {
+			return a.(func() interface{})()
+		}
+		return a
+	}
+	if reflect.TypeOf(b).Kind() == reflect.Func {
+		return b.(func() interface{})()
+	}
+	return b
 }

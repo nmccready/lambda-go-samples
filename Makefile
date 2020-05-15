@@ -9,14 +9,14 @@ help: ## Generates this help message
 version: ## Echo the current version
 	@echo $(VERSION)
 
-zip: ## builds the linux binary, and creates the zip for lambda upload
+zip: clean ## builds the linux binary, and creates the zip for lambda upload
 	GOOS=linux ./scripts/build.sh
 	aws cloudformation package --template-file template.yml --s3-bucket $(AWS_S3_BUCKET) --output-template-file packaged.yml
 
 clean: ## Remove ./bin
 	@rm -rf ./bin
 
-build: ## Build binary osx
+build: clean ## Build binary osx
 	./scripts/build.sh
 
 update: zip ## Updates the lambda code in the existing CF stack
@@ -46,4 +46,8 @@ get-api: ## Prints ApiGateway url base
 
 test: ## test the module
 	@go test `go list ./... | egrep -v scripts`
+
+clear-s3: ## wipe s3 bucket
+	aws s3 rm s3://$(AWS_S3_BUCKET) --recursive
+
 
