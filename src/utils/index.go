@@ -1,11 +1,19 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
 	"runtime"
+)
+
+var (
+	// ErrNameNotProvided is thrown when a name is not provided
+	ErrNameNotProvided   = errors.New("no name was provided in the HTTP body")
+	ErrInvalidGetRequest = errors.New("invalid GET request")
+	Version              string
 )
 
 func Dirname__() string {

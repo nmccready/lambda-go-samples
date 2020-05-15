@@ -4,9 +4,6 @@
   "version": "0.0.3",
   "description": "lambda go sample, package.json is for versioning only",
   "main": "index.js",
-  "scripts": {
-    "test": "go test $(go list ./... | egrep -v scripts)"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nmccready/lambda-go-samples.git"

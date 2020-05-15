@@ -2,10 +2,10 @@ AWSTemplateFormatVersion: 2010-09-09
 Transform: AWS::Serverless-2016-10-31
 
 Resources:
-  HelloFunction:
+  Index:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: bin/main
+      Handler: bin/index
       Runtime: go1.x
       Environment:
         Variables:
@@ -17,11 +17,31 @@ Resources:
           Properties:
             Path: /
             Method: post
+  Version:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: bin/version
+      Runtime: go1.x
+      Environment:
+        Variables:
+          REGIONS: us-east-1,us-east-2,us-west-1,us-west-2
+      Policies: AmazonEC2ReadOnlyAccess
+      Events:
         Version:
           Type: Api
           Properties:
             Path: /version
             Method: get
+  Tmp:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: bin/tmp
+      Runtime: go1.x
+      Environment:
+        Variables:
+          REGIONS: us-east-1,us-east-2,us-west-1,us-west-2
+      Policies: AmazonEC2ReadOnlyAccess
+      Events:
         Tmp:
           Type: Api
           Properties:

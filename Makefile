@@ -1,4 +1,4 @@
-.PHONY: help, version, zip, build-osx, update-fn-code, deploy-stack, print-api-url
+.PHONY: help, version, zip, build-osx, update-fn-code, deploy-stack, print-api-url, clean, get-build
 # SEE .env FOR $AWS_STACK_NAME, $AWS_S3_BUCKET
 
 VERSION=$(shell jq -r ".version" package.json)
@@ -10,13 +10,14 @@ version: ## Echo the current version
 	@echo $(VERSION)
 
 zip: ## builds the linux binary, and creates the zip for lambda upload
-	GOOS=linux go build -o bin/main  -ldflags '-X main.Version="$(VERSION)"' src/main.go
-	# GOOS=linux go build -o main  -ldflags '-X main.Version="$(VERSION)"' main.go aws.go
+	GOOS=linux ./scripts/build.sh
 	aws cloudformation package --template-file template.yml --s3-bucket $(AWS_S3_BUCKET) --output-template-file packaged.yml
 
+clean: ## Remove ./bin
+	@rm -rf ./bin
+
 build: ## Build binary osx
-	go build -o bin/main  -ldflags '-X main.Version="$(VERSION)"' src/main.go
-	# go build -o main  -ldflags '-X main.Version="$(VERSION)"' main.go aws.go
+	./scripts/build.sh
 
 update: zip ## Updates the lambda code in the existing CF stack
 	aws lambda update-function-code --function-name $(shell aws cloudformation list-stack-resources --stack-name $(AWS_STACK_NAME) --query 'StackResourceSummaries[?ResourceType == `AWS::Lambda::Function`].PhysicalResourceId' --out text) \
@@ -39,5 +40,5 @@ get-api: ## Prints ApiGateway url base
 	    --out text
 
 test: ## test the module
-	@npm test
+	@go test `go list ./... | egrep -v scripts`
 
